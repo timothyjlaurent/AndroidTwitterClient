@@ -11,6 +11,8 @@
     <string name="title_activity_compose">ComposeActivity</string>
     <string name="compose_prompt">Compose Tweet:</string>
     <string name="compose_label">Update Status</string>
-	<string name="go_back">Go Back</string>
-	<string name="login">Login</string>
+    <string name="go_back">Go Back</string>
+    <string name="login">Login</string>
+    <string name="title_activity_profile">ProfileActivity</string>
+
 </resources>

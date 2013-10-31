@@ -12,6 +12,7 @@
         android:id="@+id/tvPrompt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+		android:layout_below="@+id/tvCharsRemain"       
         android:text="@string/compose_prompt"
         android:textSize="25sp" />
 
@@ -22,7 +23,6 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
         android:layout_below="@+id/tvPrompt"
-        android:layout_above="@+id/btnTweet"
         android:ems="10"
         android:maxLength="140"
         android:inputType="textMultiLine"
@@ -35,11 +35,11 @@
         android:id="@+id/tvCharsRemain"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
+        android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
-    <Button
+ <!--    <Button
         android:id="@+id/btnTweet"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -47,5 +47,5 @@
         android:layout_alignParentRight="true"
         android:onClick="onSendTweet"
         android:background="@drawable/ic_tweet" />
-
+ -->
 </RelativeLayout>

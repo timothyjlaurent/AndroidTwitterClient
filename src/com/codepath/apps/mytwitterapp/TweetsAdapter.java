@@ -3,9 +3,11 @@ package com.codepath.apps.mytwitterapp;
 import java.util.List;
 
 import android.content.Context;
+import android.content.Intent;
 import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
@@ -29,8 +31,17 @@ public class TweetsAdapter extends ArrayAdapter<Tweet>{
 				view = inflater.inflate(R.layout.tweet_item, null);
 			}
 			Tweet tweet = getItem(position);
-			
+	
 			ImageView imageView = (ImageView) view.findViewById(R.id.ivProfile);
+			imageView.setTag(tweet.getUser().getScreenName());
+			imageView.setOnClickListener( new OnClickListener()  {	
+				@Override
+				public void onClick(View v) {
+					Intent i = new Intent(getContext(), ProfileActivity.class);
+					i.putExtra("screenName",(String) v.getTag() );
+					getContext().startActivity(i);
+				}
+			} );
 			ImageLoader.getInstance().displayImage(tweet.getUser().getProfileImageUrl(), imageView);
 			
 			TextView nameView = (TextView) view.findViewById(R.id.tvName);

@@ -48,5 +48,10 @@ public class User extends BaseModel {
         return u;
     }
 
+	public String getTagline() {
+		// TODO Auto-generated method stub
+		return getString("description");
+	}
+
 
 }

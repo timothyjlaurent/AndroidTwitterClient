@@ -50,7 +50,7 @@ public class ComposeActivity extends Activity {
 		return true;
 	}
 
-	public void onSendTweet(View v){
+	public void onSendTweet(MenuItem item){
 		String tweet = etTweet.getText().toString();
 		
 		MyTwitterApp.getRestClient().postTweet(new AsyncHttpResponseHandler(){

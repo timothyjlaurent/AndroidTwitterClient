@@ -1,57 +1,42 @@
 package com.codepath.apps.mytwitterapp;
 
-import java.util.ArrayList;
+import com.codepath.apps.mytwitterapp.fragments.HomeTimelineFragment;
+import com.codepath.apps.mytwitterapp.fragments.MentionsFragment;
 
-import org.json.JSONArray;
-
-import android.app.Activity;
+import android.app.ActionBar;
+import android.app.ActionBar.Tab;
+import android.app.ActionBar.TabListener;
+import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.ListView;
 
-import com.codepath.apps.mytwitterapp.models.Tweet;
-import com.loopj.android.http.JsonHttpResponseHandler;
+public class TimelineActivity extends FragmentActivity implements TabListener {
+	
 
-import eu.erikw.PullToRefreshListView;
-import eu.erikw.PullToRefreshListView.OnRefreshListener;
-
-public class TimelineActivity extends Activity {
-	PullToRefreshListView lvTweets;
-	int max_id;
-	ArrayList<Tweet> tweets;
-	TweetsAdapter adapter;
-	long maxID;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
+		super.onCreate(savedInstanceState); 
 		setContentView(R.layout.activity_timeline);
-		lvTweets = (PullToRefreshListView) findViewById(R.id.lvTweets) ;
-		
-		
-		initializeHomeTimeline();
-		
-		lvTweets.setOnScrollListener( new EndlessScrollListener(){
-			@Override
-			public void onLoadMore(int page, int totalItemsCount){
-				refreshHomeTimeline(max_id);
-			}
-		});
-		
-        lvTweets.setOnRefreshListener(new OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                // Your code to refresh the list contents
-                // Make sure you call listView.onRefreshComplete()
-                // once the loading is done. This can be done from here or any
-                // place such as when the network request has completed successfully.
-                initializeHomeTimeline();
-                lvTweets.onRefreshComplete();
-            }
-        });
-		
+		setupNavigationTabs();
+	}
+
+	private void setupNavigationTabs() {
+		ActionBar actionBar = getActionBar();
+		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+		actionBar.setDisplayShowTitleEnabled(true);
+		Tab tabHome = actionBar.newTab().setText("Home")
+				.setTag("HomeTimelineFragment").setIcon(R.drawable.ic_home)
+				.setTabListener(this);
+		Tab tabMentions = actionBar.newTab().setText("Mentions")
+				.setTag("MentionsFragment").setIcon(R.drawable.ic_mentions)
+				.setTabListener(this);
+		actionBar.addTab(tabHome);
+		actionBar.addTab(tabMentions);
+		actionBar.selectTab(tabHome);
 	}
 
 	@Override
@@ -66,39 +51,56 @@ public class TimelineActivity extends Activity {
 		startActivityForResult(i, 1);
 	}
 	
-	public void initializeHomeTimeline(){
-		MyTwitterApp.getRestClient().getHomeTimeline(0, new JsonHttpResponseHandler(){
-			@Override
-			public void onSuccess(JSONArray jsonTweets){
-				Log.d("DEBUG", jsonTweets.toString());
-				tweets = Tweet.fromJson(jsonTweets);
-				adapter = new TweetsAdapter(getBaseContext(),tweets);
-				lvTweets.setAdapter(adapter);
-				maxID = tweets.get(tweets.size()-1).getId()-1;
-			}
-		});
-	}
-	
-	public void refreshHomeTimeline(int max_id){
-		MyTwitterApp.getRestClient().getHomeTimeline(max_id, new JsonHttpResponseHandler(){
-			@Override
-			public void onSuccess(JSONArray jsonTweets){
-				Log.d("DEBUG", jsonTweets.toString());
-				tweets = Tweet.fromJson(jsonTweets);
-				adapter.addAll(tweets);	
-				maxID = tweets.get(tweets.size()-1).getId()-1;
-			}
-		});
-	}
-	
-	@Override
+
 	public void onActivityResult(int requestCode, int resultCode, Intent data){
 		  if (resultCode == RESULT_OK && data.getExtras().getString("value").equals("success")) {
 //			     Toast.makeText(this, data.getExtras().getString("name"),
 //			     Toast.LENGTH_SHORT).show();
-			     adapter.clear();
-			     refreshHomeTimeline(0);
+//			     adapter.clear();
+//			     refreshHomeTimeline(0);
+//				FragmentManager manager= getSupportFragmentManager();
+			
+				//				manager.executePendingTransactions();
+//				android.support.v4.app.FragmentTransaction fts = manager.beginTransaction();
+//				fts.replace(R.id.frame_container, new HomeTimelineFragment());
+//				fts.commit();  
 		  }
+	}
+
+	@Override
+	public void onTabReselected(Tab tab, FragmentTransaction ft) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onTabSelected(Tab tab, FragmentTransaction ft) {
+		FragmentManager manager= getSupportFragmentManager();
+		
+		android.support.v4.app.FragmentTransaction fts = manager.beginTransaction();
+		if( tab.getTag() == "HomeTimelineFragment")	{
+			fts.replace(R.id.frame_container, new HomeTimelineFragment());
+		} else {
+			fts.replace(R.id.frame_container, new MentionsFragment());
+		}
+		fts.commit();
+		
+	}
+	
+	@Override
+	public void onTabUnselected(Tab tab, FragmentTransaction ft) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void onProfileView( MenuItem mi ){
+		Intent i = new Intent(this, ProfileActivity.class);
+		startActivityForResult(i,1);
+	}
+	
+	public void onProfileView ( long id){
+		Intent i = new Intent(this, ProfileActivity.class);
+		startActivityForResult(i,1);
 	}
 	
 }
